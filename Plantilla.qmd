@@ -1,0 +1,138 @@
+---
+title: "Proyecto Gestión Financiera"
+author: "José Ignacio Fernández"
+format: html
+editor: visual
+---
+
+```{r configuraciones}
+#| message: false
+#| echo: false
+# Esto ya debiera estar cargado en el proyecto en posit.cloud
+# devtools::install_github("business-science/tidyquant")
+# Loads tidyquant, lubridate, xts, quantmod, TTR, and PerformanceAnalytics
+library(tidyverse)
+library(tidyquant)  
+```
+
+## Descripción Activo y Contexto (Hito 1)
+
+### Definición
+
+La industria de la energía a nivel mundial a tenido un gran avance y desarrollo. Por parte de la sustentabilidad cada vez se buscan y encuentran mejoras importantes para el ámbito eléctrico y combustión, mejorando condiciones de vida, ahorro de energía y disminución de contaminación ambiental.
+
+América del sur se encuentra muy bien posicionado en el ámbito del desarrollo sostenible e del ámbito eléctrico, mostrando y representando dinámicas importantes tanto en generación, como en consumo e intercambio de energía en el continente. Como se comenta en el paper ["Exploring sustainable electricity system development pathways in South America's MERCOSUR sub-region"](https://www.webofscience.com/wos/woscc/full-record/WOS:001059422500001), la alta capacidad de energía hidroeléctrica da una flexibilidad muy importante para integrar la energía eólica o solar evitando la dependencia de recursos más costosos o contaminantes.
+
+Es así como Empresas Copec está expandiéndose poco a poco buscando impulsar la sustentabilidad en combustibles, en electricidad, explorando y potenciando el uso eficiente y efectivo de la energía en sus distintos ámbitos, invirtiendo en empresas tanto en Chile como en el exterior.
+
+```{r ETL}
+#| echo: false
+# Alternativamente Use FANG data set
+# data("FANG") 
+end <- as_date("2022-12-31")
+# Get AAPL and AMZN Stock Prices
+# AAPL <- tq_get("AAPL", get = "stock.prices", from = "2015-09-01", to = end)
+# AMZN <- tq_get("AMZN", get = "stock.prices", from = "2000-01-01", to = end)
+CMPC <- tq_get("COPEC.SN", get = "stock.prices", from = "2000-01-01", to = end)
+VAPORES <- tq_get("VAPORES.SN", get = "stock.prices", from = "2000-01-01", to = end)
+CONCHATORO <- tq_get("CONCHATORO.SN", get = "stock.prices", from = "2000-01-01", to = end)
+CL <- rbind(CMPC,VAPORES,CONCHATORO)
+CMPC=na.omit(CMPC)
+```
+
+El activo Empresas Copec S.A. tiene un valor promedio para el intervalo igual a `r round(mean(CMPC$close),digits=0)`
+
+```{r CMPCline}
+#| echo: false
+CMPC %>%
+    ggplot(aes(x = date, y = close)) +
+    geom_line() +
+    labs(title = "Empresas Copec S.A. Line Chart", y = "Closing Price", x = "") + 
+    theme_tq() +
+  geom_hline(yintercept=mean(CMPC$close), linetype="dashed", color = "red")
+```
+
+### Motivación
+
+Empresas Copec es una empresa de clase mundial, la cual busca contribuir al desarrollo de nuestro país y los demás países en los que participa, entregando un servicio rentable a largo plazo para sus inversionistas. La empresa invierte principalmente en áreas donde pueda crear valor de manera sustentable, como la energía y recursos naturales.
+
+Se anuncio una [inversión de US\$1.876 millones](https://www.latercera.com/pulso/noticia/empresas-copec-anuncia-inversiones-por-us1876-millones-en-2023-y-anticipa-que-proyecto-mapa-estaria-operativo-en-su-totalidad-en-un-ano-mas/TKAXDK4LWNEM5HLYZKRYCINEDE/) en 2023 tanto en Chile como en el exterior, donde aproximadamente dos tercios del monto total serán destinados al sector forestal y un 27% al sector de la energía.
+
+Además a comienzos de este año formo parte de la ronda de inversión de una startup estadounidenses que adapta motores diésel para combustibles renovables. Está [startup llamada ClearFlame Engine Technologies](https://www.latercera.com/pulso/noticia/una-startup-que-adapta-motores-diesel-para-combustibles-renovables-la-ultima-inversion-de-copec/W6HCB2M72ZB37EMDW5653SV644/), recaudo US\$30 millones para poder continuar con sus pruebas de un nuevo carburante que sea útil en vehículos de combustión convencional, así logrando una contaminación menor.
+
+La compañía también ingreso el segundo semestre de 2019 a la empresa española Ampere Energy con un 13,5%. Esta es una empresa de almacenamiento energético, la cual entrega grandes posibilidades para potenciar el mercado de energía renovable e independencia energética tanto de las empresas como de las personas. [Hoy en día Empresas Copec alcanza el 65,2%.](https://www.latercera.com/pulso/noticia/copec-toma-el-control-de-empresa-espanola-de-almacenamiento-energetico-ampere-energy/G4W7S5V47ZB5LAXE52FU7YHAIY/)
+
+### Contexto
+
+La industria de la energía hoy en día es una de las más importantes del mundo, ya que se utiliza en el día a día de todas las personas y por cómo ha ido evolucionando, cada vez se buscan mejoras en el ámbito de la electricidad y la combustión, entre otros, para generar un ecosistema más sustentable en nuestras vidas.
+
+Empresas Copec busca una gran mejora en estos ámbitos de manera sustentable, entrando en el tema de las energías renovables dentro de sus inversiones.
+
+Dentro de estas podemos encontrar distintos proyectos como las soluciones solares fotovoltaicas de Copec, las cual se centra en la obtención de energía a través de paneles solares, tanto para empresas como industrias generando grandes ahorros en sus cuentas de luz. Aquí se encuentra Flux de Copec. Para estos proyectos se debe tener en cuenta la importación de los paneles y  distintos materiales para la instalación de estos, aquí entra un factor clave como lo es el precio del dólar, ya que este afecta tanto en sus gastos como en los precios de venta de su servicio. En el siguiente grafico se puede ver el valor del USD a CLP y como ha sido su evolución en los últimos meses. Al momento 1 USD = 905,37 CL.
+
+[![Variación precio USD to CLP](photos/Captura de pantalla 2023-09-28 a la(s) 18.12.48.png)](https://www.dolaronline.cl/)
+
+Siguiendo con la línea de la industria de la energía empresas copec también está muy pendiente al precio del litio a nivel internacional, ya que hoy en día forman gran parte de Ampere Energy, como se mencionó anteriormente, empresa que crea baterías de litio inteligentes de segunda generación con alta capacidad de almacenaje.
+
+![Precio del litio en China](photos/Captura%20de%20pantalla%202023-09-28%20a%20la(s)%2019.24.34.png)
+
+![Cantidad y precio de exportación de litio en Chile](photos/Captura%20de%20pantalla%202023-09-28%20a%20la(s)%2019.25.16.png)
+
+Al mismo tiempo se encuentra dentro del mundo de la combustión, como lo es en chile con Copec Chile. Esta empresa es distribuidora de combustible a lo largo del país, en sus propias bencineras. Para este caso deben tener presente la variación del precio del combustible por parte de ENAP (Empresa Nacional del Petróleo), la cual es la que le distribuye a todas las bencineras del país además de lo que importan desde el exterior.
+
+![Variación de precio de combustibles (ENAP)](photos/Captura%20de%20pantalla%202023-09-28%20a%20la(s)%2018.48.11.png)
+
+### Análisis de Largo Plazo
+
+#### Caracterización deuda (Aplicación cap. 15)
+
+Hablando de la deuda, se han emitido bonos tanto en dólares, como en UF, como en pesos. Al la fecha del estado financiero consolidado intermedio (T2) 30 de junio de 2023 y 31 de diciembre 2022, se puede apreciar en la tabla los montos en MUS\$ de pasivos financieros corrientes y no corrientes, incluyendo en esta clasificación distintas obligaciones que tienen tanto con bancos e instituciones financieras, al igual que las obligaciones con el público mediante los bonos emitidos.
+
+![Estados financieros consolidados intermedios (T2)](photos/Captura%20de%20pantalla%202023-09-28%20a%20la(s)%2016.55.10.png)
+
+De los [estados financieros consolidados intermedios (T2)](https://www.empresascopec.cl/wp-content/uploads/2023/08/Estados-Financieros-2T-2023.pdf), Empresas Copec cuenta con 1.299.853.848 acciones, estas forman parte del capital suscrito y pagado de la sociedad (todas de un mismo valor), el cual al 30 de junio del año 2023 es igual a MUS\$686.114.
+
+No se ha efectuado ningún aumento de capital al 30 de junio de 2022 y 2023.
+
+![Estados financieros consolidados intermedios (T2)](photos/Captura%20de%20pantalla%202023-09-28%20a%20la(s)%2016.09.13.png){fig-align="center"}
+
+La acción de Empresas Copec, se encuentra al momento en [CLP\$6.227,3](https://finance.yahoo.com/quote/COPEC.SN?p=COPEC.SN), variando últimamente entre los CLP\$6.000-6.300 aproximadamente. Se puede ver en el siguiente grafico su comportamiento de los últimos meses desde comienzos del año 2023, donde se aprecia un aumento desde marzo, ya sea por los distintos proyectos y ampliaciones en las que ha estado participando como algunas de las noticias mencionadas anteriormente. A su vez también tiene algunas bajas por algunos gastos en cierres de plantas y siniestros forestales en Arauco, por ejemplo, al igual que en el sector de la energía ha tenido algunas bajas por menores resultados en Copec Chile, Terpel y Mapco, acorde a los [resultados del T1](https://www.empresascopec.cl/wp-content/uploads/2023/05/06.a-Press-Release-1Q23-prensa.pdf).
+
+![Acción Empresas Copec S.A.](photos/Captura%20de%20pantalla%202023-09-28%20a%20la(s)%2016.19.45.png){fig-align="center"}
+
+#### Caracterización de emisiones históricas (Aplicación cap. 20)
+
+Dentro de las emisiones que ha tenido Empresas Copec S.A. no ha habido muchos cambios ni aumentos en los últimos años, como muestra el informe los estados financieros consolidados intermedios (T2), en la siguiente tabla desde el primero de enero de 2022 no se han emitido nuevas acciones hasta el día.
+
+![Patrimonio de la empresa 2022-2023 a la fecha (T2)](photos/Captura%20de%20pantalla%202023-09-28%20a%20la(s)%2020.09.06.png)
+
+Por otra parte una [valoración de Empresas Copec S.A. del año 2017](https://repositorio.uchile.cl/bitstream/handle/2250/147678/Malo%20Soto%20Eduardo.pdf?sequence=1), realizado por la Universidad de Chile, muestra el patrimonio de la empresa desde el año 2012 hasta el 2016 (año anterior al de la valorización) donde la cantidad de acciones sigue siendo la misma que hoy en día, como se puede apreciar en la tabla.
+
+![Patrimonio 2012-2016, valorización por Universidad de Chile](photos/Captura%20de%20pantalla%202023-09-28%20a%20la(s)%2020.09.26.png)
+
+#### Relación con activos derivados
+
+Dentro de los activos de la empresa se encuentran los corrientes y no corrientes. Para la parte de los derivados encontramos los swap y los forward. Los primeros son contratados para cubrir la exposición al tipo de cambio, que surge al tener duda de monedas distintas a las funcionales. Por otra parte los forward son un contrato de derivado que se utiliza comúnmente para cubrir los riesgos del mercado, estos son registrados como activos cuando el valor razonable es positivo y como pasivos cuando el valor razonable es negativo, acorde a los estados financieros consolidados intermedios (T2).
+
+En las siguientes tablas se puede ver una comparación del año anterior con lo que va del año 2023.
+
+![Activos financieros corrientes (T2)](photos/Captura%20de%20pantalla%202023-09-28%20a%20la(s)%2019.43.41.png)
+
+![Activos financieros no corrientes (T2)](photos/Captura%20de%20pantalla%202023-09-28%20a%20la(s)%2019.43.55.png)
+
+### Reporte grupal
+
+Normalmente, los inversionistas no invierten todo su dinero en un solo\
+instrumento, sino que en más de uno, lo que se conoce como portafolio de inversión. ¿Por qué? Porque al diversificar o invertir en más de un instrumento se busca reducir el riesgo de la inversión total.
+
+Para ello, se ha propuesto nuestro portafolios compuesto por 3 tipos de activos: Inmobiliario, Banca y Energía, y hemos asignado un porcentaje a cada uno dentro de nuestro portafolios:
+
+Para la confección de nuestro portafolios diversificado de inversión, se consideró un peso de 50% para activos inmobiliarios porque son de bajo riesgo, ya que la adquisición de centros comerciales como los de Cencosud que opera de manera internacional, es uno de los segmentos más dinámicos, por lo que puede otorgar ganancias tanto a corto como largo plazo, lo que entrega una mayor producción de flujo de efectivo en comparación a otras inversiones inmobiliarias.
+
+Otro de los principales beneficios de las inversiones en inmobiliaria son las protecciones contra la inflación, ya que al menos en Chile, los precios de este tipo de activo se determinan en UF en el caso de adquirir propiedades. Por otro lado, este tipo de inversión es menos riesgosa para obtener ingresos pasivos.
+
+Además de esto, los rendimientos porcentuales específicamente de los activos de Cencosud, se han visto al alza en los últimos meses, lo que es un buen indicativo de que seguirá al alza los meses siguientes (rubro minorista en nuestro caso)
+
+Para la energía se escogió Empresas Copec S.A, la cual hoy en día está formando parte de muchos proyectos sustentables tanto en Chile como en el extrangero. Se acordó que formará parte del portafolio con un 35%, esto debido a que pese a que la industria de la energía está en constante progreso, con el objetivo de generar métodos más sustentables para la producción y utilización de esta, aún está en constante desarrollo. Este trae consigo cierta incertidumbre en todos sus ámbitos sobre todo en las grandes inversiones que se realizan para hacer pruebas y testeos de los nuevos sistemas que se implementan. Pero pese a eso el mundo energético tiene una buena proyección a un mediano-largo plazo, donde se espera tener grandes avances para implementar energías renovables y sustentables que generen menores emisiones y tengan un aporte significativo en la sociedad.
+
+El 15% de este portafolio está destinado al activo bancario, el cual es el fondo mutuo Bci USA. Este se caracteriza por ser parte del mercado accionario de Estados Unidos, se invierte en deuda y en capitalización, e invierte como mínimo el 60% de sus activos en acciones de empresas que operan en Estados Unidos. Es un fondo de gran diversificación y te permite invertir en el mercado internacional, pero la razón por la que le dimos un porcentaje tan bajo, es que tiene un perfil muy agresivo, lo que implica constantes fluctuaciones negativas y la posibilidad de ganancias en el largo plazo. Por lo que como grupo decidimos ser adversos al riesgo y centrarnos en opciones más seguras e innovadoras. 
