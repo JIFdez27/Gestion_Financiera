@@ -180,7 +180,7 @@ print(precio)
 
 ### Modelo Adicional de valorizacion
 
-Como modelo adicional se utilizó el método de valorización de Monte Carlo. Este se basa en la capacidad de estimar el valor esperado (o promedio) del rendimiento o payoff de una opción utilizando múltiples simulaciones de escenarios aleatorios del precio del activo subyacente.
+Como modelo adicional se utilizó el método de valorización de Monte Carlo. De ["El método Monte-Carlo y su aplicación a finanzas"](http://mat.izt.uam.mx/mat/documentos/notas%20de%20clase/cfenaoe3.pdf) de la Universidad Autínoma Metropolitana-Iztapalapa, este se basa en la capacidad de estimar el valor esperado (o promedio) del rendimiento o payoff de una opción utilizando múltiples simulaciones de escenarios aleatorios del precio del activo subyacente.
 
 La formulación es la siguiente:
 
