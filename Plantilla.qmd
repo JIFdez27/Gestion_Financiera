@@ -122,8 +122,7 @@ En las siguientes tablas se puede ver una comparación del año anterior con lo 
 
 ### Reporte grupal
 
-Normalmente, los inversionistas no invierten todo su dinero en un solo\
-instrumento, sino que en más de uno, lo que se conoce como portafolio de inversión. ¿Por qué? Porque al diversificar o invertir en más de un instrumento se busca reducir el riesgo de la inversión total.
+Normalmente, los inversionistas no invierten todo su dinero en un solo instrumento, sino que en más de uno, lo que se conoce como portafolio de inversión. ¿Por qué? Porque al diversificar o invertir en más de un instrumento se busca reducir el riesgo de la inversión total.
 
 Para ello, se ha propuesto nuestro portafolios compuesto por 3 tipos de activos: Inmobiliario, Banca y Energía, y hemos asignado un porcentaje a cada uno dentro de nuestro portafolios:
 
@@ -138,6 +137,12 @@ Para la energía se escogió Empresas Copec S.A, la cual hoy en día está forma
 El 15% de este portafolio está destinado al activo bancario, el cual es el fondo mutuo Bci USA. Este se caracteriza por ser parte del mercado accionario de Estados Unidos, se invierte en deuda y en capitalización, e invierte como mínimo el 60% de sus activos en acciones de empresas que operan en Estados Unidos. Es un fondo de gran diversificación y te permite invertir en el mercado internacional, pero la razón por la que le dimos un porcentaje tan bajo, es que tiene un perfil muy agresivo, lo que implica constantes fluctuaciones negativas y la posibilidad de ganancias en el largo plazo. Por lo que como grupo decidimos ser adversos al riesgo y centrarnos en opciones más seguras e innovadoras. 
 
 ### Aplicación Black-Scholes
+
+El modelo de Black-Scholes es una fórmula matemática que se utiliza para calcular el precio de una opción financiera que sólo puede ejercerse en la fecha de vencimiento. Los parámetros utilizados incluyen el precio actual del activo subyacente, el precio de ejercicio de la opción, la volatilidad del activo, la tasa de interés libre de riesgo y el tiempo hasta que expire la opción.
+
+En este caso, Empresas Copec S.A. no tiene opciones, por lo que se utilizo una empresa similar en Estado Unidos, la cual es ExxonMobil Corporation.
+
+En el código utilizado se buscó la valorización de una opción tipo "put" de Exxon Mobil para el 24 de Noviembre. El valor obtenido es fue el siguiente:
 
 ```{python}
 #| echo: false
@@ -173,17 +178,74 @@ precio = black_scholes(S, K, T, r, sigma)
 print(precio)
 ```
 
-Se valoriza correctamente una opción de compra del activo principal definido en el Hito 1, utilizando el modelo de Black-Scholes continuo apoyándose de un código replicable que compute el modelo. Se apoya de literatura para complementar su valorización.
-
-rrr
-
 ### Modelo Adicional de valorizacion
 
-Se explica junto con descripcion matemática (fórmulas) correcta un modelo alternativo para valorizar la accion haciendo revisión de literatura cientifica con tal de hacer una referencia a un artículo del modelo.
+Como modelo adicional se utilizó el método de valorización de Monte Carlo. Este se basa en la capacidad de estimar el valor esperado (o promedio) del rendimiento o payoff de una opción utilizando múltiples simulaciones de escenarios aleatorios del precio del activo subyacente.
+
+La formulación es la siguiente:
+
+$V=e^{-rT}\cdot \frac{1}{N}\sum_{i=1}^{N}Payoff_{i}$
+
+Donde:
+
+-   V es el precio estimado de la opción.
+
+-   T es tiempo hasta la expiración de la opción en años.
+
+-   r es la tasa de interés libre de riesgo (anual)
+
+-   N es el número de simulaciones Monte Carlo a realizar
+
+    Para el Payoff se tiene la opcion call o put. En el caso utilizado, ya que es una opción put, la fromula sería la siguiente:
+
+    $Payoff_{i}=max\left ( K-S_{i},0 \right )$
+
+    Donde:
+
+-   S es el precio actual del activo subyacente.
+
+-   K es el precio de ejercicio de la opción.
 
 ### Aplicacion modelo adicional
 
-Se aplica el modelo alternativo apoyandose de un código replicable que computa el modelo.
+Aplicando el modelo de Monte Carlo se obtiene un valor de:
+
+```{python}
+#| echo: false
+import numpy as np
+import yfinance as yf
+from datetime import datetime as dt
+import datetime
+from scipy.stats import norm
+import math
+from math import log, sqrt, exp
+
+def monte_carlo_option_pricing(S, K, T, r, sigma, num_simulations):
+    z = np.random.standard_normal(num_simulations)
+    ST = S * np.exp((r - 0.5 * sigma**2) * T + sigma * np.sqrt(T) * z)
+    option_prices = np.maximum(K - ST, 0)
+    option_price = np.exp(-r * T) * np.mean(option_prices)
+    return option_price
+
+t = yf.Ticker("XOM")
+S = t.info["currentPrice"] # Precio actual del activo subyacente
+stock_data = yf.download("XOM", start="2023-01-01", end="2023-10-24")
+# Calcula la variación del rendimiento
+stock_data["Returns"] = stock_data["Adj Close"].pct_change()
+sigma = stock_data["Returns"].std() # Volatilidad del activo subyacente
+opcion = yf.Ticker("XOM231124P00126000")
+K = opcion.info["strikePrice"] # Precio de ejercicio de la opción
+expire_date = opcion.info["expireDate"]
+fecha = datetime.datetime.utcfromtimestamp(expire_date)
+T = ((fecha-dt.now()).days)/365# Tiempo hasta la expiración de la opción en años
+bono = yf.download("^TNX", start="2023-01-01", end=dt.now(), interval = "1d")["Close"] #Resultados del bono de la tesorería
+r = bono[-1]/100 #Se obtiene el rendimiento del bono mas reciente y se convierte a porcentaje (R).
+num_simulations = 10000
+
+
+precioM = monte_carlo_option_pricing(S, K, T, r, sigma, num_simulations)
+print(precioM)
+```
 
 ### Análisis de contraste de ambos modelos
 
