@@ -175,6 +175,8 @@ print(precio)
 
 Se valoriza correctamente una opción de compra del activo principal definido en el Hito 1, utilizando el modelo de Black-Scholes continuo apoyándose de un código replicable que compute el modelo. Se apoya de literatura para complementar su valorización.
 
+rrr
+
 ### Modelo Adicional de valorizacion
 
 Se explica junto con descripcion matemática (fórmulas) correcta un modelo alternativo para valorizar la accion haciendo revisión de literatura cientifica con tal de hacer una referencia a un artículo del modelo.
