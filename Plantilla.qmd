@@ -192,9 +192,9 @@ Donde:
 
 -   T es tiempo hasta la expiración de la opción en años.
 
--   r es la tasa de interés libre de riesgo (anual)
+-   r es la tasa de interés libre de riesgo.
 
--   N es el número de simulaciones Monte Carlo a realizar
+-   N es el número de simulaciones Monte Carlo a realizar.
 
     Para el Payoff se tiene la opcion call o put. En el caso utilizado, ya que es una opción put, la fromula sería la siguiente:
 
@@ -249,14 +249,20 @@ print(precioM)
 
 ### Análisis de contraste de ambos modelos
 
-Se realiza una comparación de los resultados de ambos modelos de valorización explicando sus similitudes y diferencias.
+Comparando ambos modelos Black-Scholes es un modelos más analitico que Monte Carlo, proporcionando una formula mas cerrada a diferencia del segundo, el cual tiene su base en la suimulacion de escenarios generados aleatoriamente.
+
+Por otra parte también Monte Carlo es un modelo mas flexible el cual permite aplicarlo a una mayor variedad de opciones.
+
+Finalmente hablando de las condiciones de las variables, el primero mencionado asume volatilidad constante y condiciones estandar del mercado, pero en cambio Monte Carlo puede manejar condiciones de mercado no estándar y volatilidad variable.
+
+Black-Scholes es un modelo más analitico y Monte Carlo uno más estocástico, pero como se puede apreciar en los resultados (arrojando ambos modelos uno casi identico), se utilizan para una misma finalidad.
 
 ### Reporte Grupal: Caso Administración
 
-Se eligen uno de los siguientes casos con tal de replicar y responder sus preguntas de acuerdo al activo principal elegido:
+El caso replicado a nuestro activo fue el de "Administración de Efectivo de Braam Industries". El activo utilizado fue el inmobiliario CENCOSHOPP.
 
--   Caso Administración de Capital de Trabajo de Keafer Manufacturing de la página 822 del ROSS.
+Los datos necesarios como las ventas anuales, la tasa de incumplimiento y los costos administrativos se obtuvieron de los estados financieros de la empresa en la CMF. El periodo de cuentas por cobrar se utiliza a 30 días. Los costos variables y la tasa de interes, fueron obtenidos de la memoria de anual de Cencosud.
 
--   Caso Administración de Efectivo de Richmond Corporation de la página 845 del ROSS.
+Como resultado se obtuvo lo siguiente:
 
--   Caso Administración de Efectivo de Braam Industries de la página 874 del ROSS.
+![](photos/Captura de pantalla 2023-10-26 a la(s) 21.53.23.png)
