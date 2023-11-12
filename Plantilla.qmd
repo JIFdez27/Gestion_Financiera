@@ -108,6 +108,8 @@ Dentro de las emisiones que ha tenido Empresas Copec S.A. no ha habido muchos ca
 
 Por otra parte una [valoración de Empresas Copec S.A. del año 2017](https://repositorio.uchile.cl/bitstream/handle/2250/147678/Malo%20Soto%20Eduardo.pdf?sequence=1), realizado por la Universidad de Chile, muestra el patrimonio de la empresa desde el año 2012 hasta el 2016 (año anterior al de la valorización) donde la cantidad de acciones sigue siendo la misma que hoy en día, como se puede apreciar en la tabla.
 
+Empresas Copec S.A. se abrió a bolsa el 19 de abril de 1987, fijando un precio inicial de 718 CLP, el precio mas antiguo encontrado el año 1993. Todas sus emisiones han sido de acciones ordinarias. Para lograr esto estuvieron varios meses realizando conferencias analizando la cantidad necesaria recaudar ademas de el tipo de acción que se lanzaría en la bolsa. Después de aclarar todos sus temas lograron presentar la información administrativa y financiera necesaria para su aprobación. 
+
 ![Patrimonio 2012-2016, valorización por Universidad de Chile](photos/Captura%20de%20pantalla%202023-09-28%20a%20la(s)%2020.09.26.png)
 
 #### Relación con activos derivados
@@ -265,4 +267,4 @@ Los datos necesarios como las ventas anuales, la tasa de incumplimiento y los co
 
 Como resultado se obtuvo lo siguiente:
 
-![](photos/Captura de pantalla 2023-10-26 a la(s) 21.53.23.png)
+![](photos/Captura%20de%20pantalla%202023-10-26%20a%20la(s)%2021.53.23.png)
